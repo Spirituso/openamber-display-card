@@ -3,7 +3,7 @@
 import { ENTITIES } from './entities.js';
 import { discover } from './discovery.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.3.0';
 
 class OpenAmberDisplayCard extends HTMLElement {
   setConfig(config) { this.config = config || {}; }

@@ -1,12 +1,12 @@
 {
   "name": "openamber-display-card",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Unofficial Home Assistant card that looks like the OpenAmber Waveshare display",
   "license": "GPL-3.0-or-later",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/card.js --bundle --minify --format=esm --outfile=dist/openamber-display-card.js",
+    "build": "esbuild src/index.js --bundle --minify --format=esm --outfile=dist/openamber-display-card.js",
     "entities": "python3 tools/gen_entities.py ../openamber > src/entities.js"
   },
   "devDependencies": { "esbuild": "^0.24.0" }

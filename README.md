@@ -6,20 +6,37 @@ maintained by the OpenAmber developer.
 
 *Nederlands: een onofficiële Home Assistant-kaart die eruitziet en werkt als het Waveshare-display van OpenAmber.*
 
-## Status
+## Quick start (v0.3)
 
-Card: early development. Dashboard: v0.2, complete (see below). What works today:
+The easiest way: a dashboard that builds itself. It contains every page of the display and finds
+your OpenAmber entities automatically, whatever you named the device.
 
-- Automatic discovery of the OpenAmber entities. The card reads the entity registry and matches on
-  the entity names set in the firmware, so it works no matter how you named the device or renamed
-  entities in Home Assistant.
+1. Install [button-card](https://github.com/custom-cards/button-card) (7.x) from HACS / the Marketplace.
+2. Install this repository (HACS custom repository, type *Dashboard*, see below) or copy
+   `dist/openamber-display-card.js` to `/config/www/` and add it as resource
+   `/local/openamber-display-card.js` (*JavaScript module*).
+3. Optional, for the language switch on the Systeem page: create a dropdown helper
+   `OpenAmber display taal` with the options `Nederlands`, `English`, `Deutsch`
+   (entity `input_select.openamber_display_taal`).
+4. Create a new dashboard (e.g. URL `openamber-display`), open *Edit > Raw configuration editor*
+   and replace everything with:
 
-Being ported from a working prototype dashboard (see Roadmap): Home, Thermostaat, Grafiek,
-Instellingen, Service and Systeem.
+```yaml
+strategy:
+  type: custom:openamber-display
+  # optional:
+  # language: English          # used when the language helper does not exist
+  # device_id: 623fce465f...   # only with more than one OpenAmber
+```
 
-## Ready-to-use dashboard (v0.2)
+5. Reload the browser (Ctrl+Shift+R).
 
-While the card is being built, the complete prototype dashboard is available in
+The dashboard is generated each time it is opened, so it is not edited in the UI. Looking up the
+entities needs an administrator account; other users fall back to matching entity names.
+
+## Static dashboard (YAML)
+
+If you prefer a dashboard you can edit yourself, the same dashboard is available as YAML in
 [`dashboard/`](dashboard/). It has every page of the display: Home, Thermostaat, Grafiek,
 Instellingen (all firmware menus), Service (incl. Diagnose with history graphs, Foutmeldingen,
 Waarschuwingen) and Systeem.
@@ -43,7 +60,7 @@ Waarschuwingen) and Systeem.
 The dashboard uses fixed entity IDs from the author's installation. Most are `*.openamber_*`,
 some are `*.zentrale_openamber_*` (the device was renamed to "Zentrale OpenAmber"). If your IDs
 differ, use search & replace in the YAML before pasting. Values that do not exist show `-`.
-The card in `src/` will find the entities automatically, so this step will go away.
+The strategy above does this automatically.
 
 ### Translations
 
@@ -51,7 +68,7 @@ The dictionaries are in `dashboard/i18n/` (`strings`: exact texts, `patterns`: t
 Selects keep sending the Dutch option values to the firmware, so switching the language never
 changes a setting.
 
-## Card installation (work in progress)
+## Installing the file
 
 ### HACS / Home Assistant Marketplace (custom repository)
 
@@ -88,12 +105,10 @@ Entities that your firmware does not expose are shown as `-`, like on the displa
 
 ## Roadmap
 
-1. Discovery and card frame (header bar, navigation) — in progress
-2. Pages: Home, Thermostaat
-3. Pages: Service (incl. Diagnose, Foutmeldingen, Waarschuwingen)
-4. Pages: Instellingen (generated from the firmware menu)
-5. Pages: Systeem, Grafiek (history from the Home Assistant recorder)
-6. Languages: Dutch, English, German (done in the dashboard, to be ported to the card)
+1. Discovery of the OpenAmber entities — done
+2. All display pages with automatic entity lookup (dashboard strategy) — done (v0.3)
+3. Languages: Dutch, English, German — done
+4. A single card (`custom:openamber-display-card`) for use inside other dashboards — in progress
 
 ## License
 
