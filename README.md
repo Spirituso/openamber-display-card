@@ -34,6 +34,22 @@ strategy:
 The dashboard is generated each time it is opened, so it is not edited in the UI. Looking up the
 entities needs an administrator account; other users fall back to matching entity names.
 
+## The card (v0.4): the display inside your own dashboard
+
+Want the display as one card in an existing dashboard? Steps 1–3 as above, then add a card:
+
+```yaml
+type: custom:openamber-display-card
+# optional:
+# page: home          # start page, e.g. thermostaat, grafiek, instellingen, service, systeem
+# language: Deutsch   # used when the language helper does not exist
+# device_id: 623fce465f...
+```
+
+All pages work inside the card: the navigation bar and the tiles switch pages within the card
+and do not change the dashboard URL. Works best full width (Panel view, or a full-width card in a
+Sections view).
+
 ## Static dashboard (YAML)
 
 If you prefer a dashboard you can edit yourself, the same dashboard is available as YAML in
@@ -81,23 +97,15 @@ changes a setting.
 Copy `dist/openamber-display-card.js` to `/config/www/` and add it as a dashboard resource
 (`/local/openamber-display-card.js`, type *JavaScript module*).
 
-## Usage
-
-```yaml
-type: custom:openamber-display-card
-# optional, only needed with more than one OpenAmber device:
-# device_id: 623fce465f9849a5629bf439a4dd9ab5
-```
-
-Best used in a dashboard view of type *Panel*. The card needs an administrator account for the
-entity registry lookup; for other users it falls back to matching the friendly names.
-
 ## Firmware versions
 
-The list of entities in `src/entities.js` is generated from the OpenAmber firmware:
+The pages are generated from `dashboard/openamber-display.yaml`. Entities are looked up by the
+names set in the OpenAmber firmware (`src/entities.js`, generated from the firmware). After a
+firmware update that renames entities:
 
 ```sh
 python3 tools/gen_entities.py /path/to/openamber > src/entities.js
+python3 tools/gen_dashboard.py > src/dashboard.js
 npm run build
 ```
 
@@ -108,7 +116,7 @@ Entities that your firmware does not expose are shown as `-`, like on the displa
 1. Discovery of the OpenAmber entities — done
 2. All display pages with automatic entity lookup (dashboard strategy) — done (v0.3)
 3. Languages: Dutch, English, German — done
-4. A single card (`custom:openamber-display-card`) for use inside other dashboards — in progress
+4. A single card (`custom:openamber-display-card`) for use inside other dashboards — done (v0.4)
 
 ## License
 

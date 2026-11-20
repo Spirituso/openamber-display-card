@@ -27,7 +27,12 @@ export async function resolveEntities(hass, deviceId) {
   return { device, ids };
 }
 
-export async function buildDashboard(config, hass) {
+const NAV_PAGE = "history.pushState(null,'','${p}');window.dispatchEvent(new CustomEvent('location-changed',{detail:{replace:false}}))";
+const NAV_CARD = "this.dispatchEvent(new CustomEvent('oa-nav',{bubbles:true,composed:true,detail:'${p}'}))";
+
+// mode 'dashboard': views navigate with the browser URL; mode 'card': views send an oa-nav event
+// that the single card catches, so it works inside any dashboard.
+export async function buildDashboard(config, hass, mode = 'dashboard') {
   const { ids } = await resolveEntities(hass, config.device_id);
   const found = ids.filter(Boolean).length;
   const map = {};
@@ -37,14 +42,15 @@ export async function buildDashboard(config, hass) {
     return { views: [{ title: 'OpenAmber', cards: [{ type: 'markdown', content:
       '## OpenAmber Display\nGeen OpenAmber-apparaat gevonden. Is de ESPHome-integratie ingesteld en ben je ingelogd als beheerder?' }] }] };
   }
-  const base = (config.url_path || location.pathname.split('/')[1] || 'openamber-display').replace(/[^a-zA-Z0-9_-]/g, '');
+  const base = mode === 'card' ? 'oa' : (config.url_path || location.pathname.split('/')[1] || 'openamber-display').replace(/[^a-zA-Z0-9_-]/g, '');
   const lang = LANGUAGES.includes(config.language) ? config.language : 'Nederlands';
   let text = JSON.stringify(DASHBOARD)
     .replace(/@@(\d+)@@/g, (m, i) => map[SLOTS[+i][2]])
     .split('/openamber-display/').join('/' + base + '/')
     .split("{}).state || 'Nederlands'").join(`{}).state || '${lang}'`);
+  if (mode === 'card') text = text.split(NAV_PAGE).join(NAV_CARD);
   const dash = JSON.parse(text);
-  if (!customElements.get('button-card')) {
+  if (mode === 'dashboard' && !customElements.get('button-card')) {
     dash.views.unshift({ title: 'Setup', path: 'setup', cards: [{ type: 'markdown', content:
       '## OpenAmber Display\nThis dashboard needs **button-card** (HACS / Marketplace). Install it and reload the page.' }] });
   }
