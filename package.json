@@ -1,6 +1,6 @@
 {
   "name": "openamber-display-card",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Unofficial Home Assistant card that looks like the OpenAmber Waveshare display",
   "license": "GPL-3.0-or-later",
   "private": true,
