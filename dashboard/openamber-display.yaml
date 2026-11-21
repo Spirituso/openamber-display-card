@@ -1234,6 +1234,14 @@ button_card_templates:
         const tr1 = (s) => { const k = OA_dec(s.trim()); if (!k) return s; let r = OA_D[k]; if (r === undefined) { for (const [re, rep] of OA_RX) if (re.test(k)) { r = k.replace(re, rep); break; } } if (r === undefined) return s; const i = s.indexOf(s.trim()); return s.slice(0, i) + r + s.slice(i + s.trim().length); };
         const TR = (html) => (!OA_EN || typeof html !== 'string') ? html : html.split(/(<(?:[^>"']|"[^"]*"|'[^']*')*>)/).map((p, i) => i % 2 ? p : tr1(p)).join('');
         const L = (s) => OA_EN ? tr1(s) : s;
+        if (!window.__oaTouch) { window.__oaTouch = 1; let t0 = null;
+        const inCard = (p) => p.some((n) => n.tagName === 'BUTTON-CARD');
+        window.addEventListener('touchstart', (e) => { const p = e.composedPath(); t0 = inCard(p) && e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() } : null; }, { capture: true, passive: true });
+        window.addEventListener('touchend', (e) => { const s = t0; t0 = null; if (!s) return; const p = e.composedPath(); const f = p[0];
+          if (f && ['SELECT', 'OPTION', 'INPUT', 'TEXTAREA'].includes(f.tagName)) { e.stopPropagation(); return; }
+          const el = p.find((n) => n.getAttribute && n.hasAttribute('onclick')); if (!el) return;
+          const c = e.changedTouches[0]; if (Math.abs(c.clientX - s.x) > 12 || Math.abs(c.clientY - s.y) > 12 || Date.now() - s.t > 800) return;
+          e.stopPropagation(); if (e.cancelable) e.preventDefault(); el.click(); }, { capture: true }); }
         return {num,val,on,S,IMG,pos,T,TC,I,MI,NAV,DARK,LINE,CARD,shadow,E,maintOn,mainState,maint,inMaint,st,has,fx,onoff,panel,GO,CALL,header,scroll,box,WR,toggle,swRow,tilesHtml,table,lockHint,SETP,TR,L,OA_EN};
         ]]]
     triggers_update:
