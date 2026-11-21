@@ -6,6 +6,22 @@ maintained by the OpenAmber developer.
 
 *Nederlands: een onofficiële Home Assistant-kaart die eruitziet en werkt als het Waveshare-display van OpenAmber.*
 
+## Screenshots
+
+All pages of the display, here with example values. Languages switch on the Systeem page.
+
+| Nederlands | English | Deutsch |
+|---|---|---|
+| ![Home NL](docs/images/home-nl.png) | ![Home EN](docs/images/home-en.png) | ![Home DE](docs/images/home-de.png) |
+
+| Thermostat | Settings |
+|---|---|
+| ![Thermostat](docs/images/thermostat-de.png) | ![Settings](docs/images/settings-en.png) |
+| **Heating curve** | **Diagnostics (tap a value for its history)** |
+| ![Heating curve](docs/images/heating-curve-en.png) | ![Diagnostics](docs/images/diagnostics-en.png) |
+| **System with language switch** | |
+| ![System](docs/images/system-en.png) | |
+
 ## Quick start (v0.3)
 
 The easiest way: a dashboard that builds itself. It contains every page of the display and finds
