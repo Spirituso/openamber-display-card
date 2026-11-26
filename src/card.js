@@ -2,7 +2,7 @@
 // for use inside any dashboard. Navigation between the pages stays inside the card.
 import { buildDashboard } from './strategy.js';
 
-const VERSION = '0.4.2';
+const VERSION = '0.4.3';
 
 // button-card templates live in the dashboard config, which a card in someone else's dashboard
 // does not have: merge the template into every page instead.
