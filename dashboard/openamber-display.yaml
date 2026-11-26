@@ -1,5 +1,5 @@
 # OpenAmber Display dashboard for Home Assistant (unofficial). Paste into: Dashboard > Edit > Raw configuration editor.
-# Requires: custom:button-card, dashboard resource dashboard/oa-graph.js, helper input_select.openamber_display_taal.
+# Requires: custom:button-card, dashboard resources dashboard/oa-graph.js and dashboard/oa-fault-history.js, helper input_select.openamber_display_taal.
 button_card_templates:
   oa_screen:
     show_name: false
@@ -126,6 +126,8 @@ button_card_templates:
         Geen actieve foutmeldingen: No active errors
         Geen actieve waarschuwingen: No active warnings
         Reset timeout-fouten: Reset timeout errors
+        Historie: History
+        Foutenhistorie: Error history
         Geen: None
         Voorfase: Pre-phase
         Ontdooien: Defrosting
@@ -679,6 +681,8 @@ button_card_templates:
         Geen actieve foutmeldingen: Keine aktiven Störungen
         Geen actieve waarschuwingen: Keine aktiven Warnungen
         Reset timeout-fouten: Timeout-Fehler zurücksetzen
+        Historie: Verlauf
+        Foutenhistorie: Störungsverlauf
         Geen: Keine
         Voorfase: Vorphase
         Ontdooien: Abtauen
@@ -2372,8 +2376,11 @@ views:
           const act = items.filter((i) => st(i[2]) === 'on');
           const entries = act.length ? act.map((i) => `<div style="background:#F5F5F5;padding:${S(8)} ${S(10)};font-size:${S(20)};color:${DARK};line-height:1.25"><div style="font-weight:500">${i[0]}</div><div style="color:#4B5563">${i[1]}</div></div>`).join('')
             : `<div style="background:#F5F5F5;padding:${S(8)} ${S(10)};font-size:${S(20)};color:${DARK}">${emptyTxt}</div>`;
-          const btnH = resetBtn ? 52 : 0;
-          const btn = resetBtn ? `<div onclick="${CALL('switch', 'turn_on', {entity_id: E.RST})}" style="${pos(14, 46, 910, 44)}border-radius:${S(10)};background:#B91C1C;color:#fff;font-size:${S(20)};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto">Reset timeout-fouten</div>` : '';
+          const btnH = 52;
+          const H = "document.querySelector('home-assistant').hass";
+          const rstClick = `event.stopPropagation();${H}.callService('switch','turn_on',{entity_id:'${E.RST}'});setTimeout(()=>${H}.callService('switch','turn_off',{entity_id:'${E.RST}'}),5000)`;
+          const btn = `<div onclick="${rstClick}" style="${pos(14, 46, 600, 44)}border-radius:${S(10)};background:${resetBtn ? '#B91C1C' : '#9CA3AF'};color:#fff;font-size:${S(20)};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto">Reset timeout-fouten</div>` +
+            `<div onclick="${NAV('/openamber-display/service-fouten-historie')}" style="${pos(626, 46, 298, 44)}border-radius:${S(10)};background:#1E4E8C;color:#fff;font-size:${S(20)};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto">Historie</div>`;
           return `<div style="${pos(42, 138, 940, 378)}box-sizing:border-box;background:#fff;border:${S(1)} solid #E5E7EB;border-radius:${S(12)}">` +
             `<div style="${pos(0, 12, 940)}text-align:center;font-size:${S(24)};color:${color};font-weight:500">${title}</div>` + btn +
             `<div style="${pos(14, 50 + btnH, 910, 314 - btnH)}overflow-y:auto;pointer-events:auto;display:flex;flex-direction:column;gap:${S(6)};text-align:left;white-space:normal">${entries}</div></div>`;
@@ -2381,6 +2388,27 @@ views:
 
         const reset = TO.some((e) => st(e) === 'on');
         return panel + header('Foutmeldingen', '/openamber-display/service') + listCard('Foutmeldingen', '#991B1B', ITEMS, 'Geen actieve foutmeldingen', reset);
+
+        })());
+        ]]]
+  subview: true
+- title: Service – Foutenhistorie
+  path: service-fouten-historie
+  icon: mdi:wrench-outline
+  type: panel
+  background: '#0A2747'
+  cards:
+  - type: custom:button-card
+    template: oa_screen
+    variables:
+      tab: service
+    custom_fields:
+      body: |-
+        [[[
+        return variables.oa.TR((() => {
+
+        const {S,pos,panel,header} = variables.oa;
+        return panel + header('Foutenhistorie', '/openamber-display/service-fouten') + `<oa-fault-history style="${pos(42, 138, 940, 378)}pointer-events:auto;font-family:Roboto, Noto, sans-serif"></oa-fault-history>`;
 
         })());
         ]]]

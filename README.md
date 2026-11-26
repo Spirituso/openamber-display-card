@@ -70,7 +70,8 @@ Sections view).
 
 If you prefer a dashboard you can edit yourself, the same dashboard is available as YAML in
 [`dashboard/`](dashboard/). It has every page of the display: Home, Thermostaat, Grafiek,
-Instellingen (all firmware menus), Service (incl. Diagnose with history graphs, Foutmeldingen,
+Instellingen (all firmware menus), Service (incl. Diagnose with history graphs, Foutmeldingen with
+a reset button for timeout errors and an error history of the last 24 h / 7 / 30 days,
 Waarschuwingen) and Systeem.
 
 **Languages:** Nederlands (default), English and Deutsch, switchable on the Systeem page.
@@ -78,8 +79,8 @@ Waarschuwingen) and Systeem.
 ### Installation
 
 1. Install [button-card](https://github.com/custom-cards/button-card) (7.x) from HACS / the Marketplace.
-2. Copy `dashboard/oa-graph.js` to `/config/www/` and add it as a dashboard resource:
-   `/local/oa-graph.js`, type *JavaScript module*.
+2. Copy `dashboard/oa-graph.js` and `dashboard/oa-fault-history.js` to `/config/www/` and add both
+   as dashboard resources: `/local/oa-graph.js` and `/local/oa-fault-history.js`, type *JavaScript module*.
 3. Create a dropdown helper (Settings > Devices & services > Helpers > Dropdown) named
    `OpenAmber display taal` with the options `Nederlands`, `English`, `Deutsch`
    → entity `input_select.openamber_display_taal`.
